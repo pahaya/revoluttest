@@ -13,6 +13,6 @@ public class AccountDao {
     }
 
     public Optional<Account> get(String id) {
-        return Optional.of(DB.get(id));
+        return Optional.ofNullable(DB.get(id));
     }
 }
