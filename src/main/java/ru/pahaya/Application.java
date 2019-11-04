@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import ru.pahaya.entrypoints.EntryPoint;
 import ru.pahaya.servlets.AccountServlet;
 import ru.pahaya.servlets.TransactionServlet;
 
@@ -31,10 +32,17 @@ public class Application {
         server.setConnectors(new Connector[] {connector});
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
+        ServletHolder jerseyServlet = context.addServlet(
+                org.glassfish.jersey.servlet.ServletContainer.class, "/*");
+        jerseyServlet.setInitOrder(0);
 
-        context.addServlet(new ServletHolder(new TransactionServlet()), "/transaction/*");
-        context.addServlet(new ServletHolder(new AccountServlet()), "/account/*");
+        jerseyServlet.setInitParameter(
+                "jersey.config.server.provider.classnames",
+                EntryPoint.class.getCanonicalName());
+//
+//
+//        context.addServlet(new ServletHolder(new TransactionServlet()), "/transaction/*");
+//        context.addServlet(new ServletHolder(new AccountServlet()), "/account/*");
 
 
         // Config and launch server
