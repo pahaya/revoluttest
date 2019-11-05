@@ -1,6 +1,6 @@
 package ru.pahaya.services;
 
-import ru.pahaya.dao.Account;
+import ru.pahaya.entity.Account;
 import ru.pahaya.dao.AccountDao;
 
 import java.math.BigDecimal;
@@ -27,5 +27,13 @@ public class SimpleAccountService implements AccountService {
         return ACCOUNT_DAO.get(id);
     }
 
+    @Override
+    public boolean delete(Account account) {
+        return ACCOUNT_DAO.remove(account);
+    }
 
+    @Override
+    public boolean withdraw(Account account, BigDecimal money) {
+        return ACCOUNT_DAO.replace(account.getId(), account, account.add(money));
+    }
 }

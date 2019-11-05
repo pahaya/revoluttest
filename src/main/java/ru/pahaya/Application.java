@@ -7,10 +7,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import ru.pahaya.entrypoints.AccountEntryPoint;
-import ru.pahaya.entrypoints.EntryPoint;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import ru.pahaya.entrypoints.TransactionEntryPoint;
 
 
 public class Application {
@@ -46,7 +46,7 @@ public class Application {
 
         jerseyServlet.setInitParameter(
                 "jersey.config.server.provider.classnames",
-                EntryPoint.class.getCanonicalName() + ";" +
+                TransactionEntryPoint.class.getCanonicalName() + ";" +
                         AccountEntryPoint.class.getCanonicalName());
 
         server.setHandler(context);
