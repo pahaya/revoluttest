@@ -33,8 +33,8 @@ public class SimpleTransactionService implements TransactionService {
         boolean lockedFirst = false;
         boolean lockedSecond = false;
         try {
-            lockedFirst = first.tryLock(100, TimeUnit.MILLISECONDS);
-            lockedSecond = second.tryLock(100, TimeUnit.MILLISECONDS);
+            lockedFirst = first.tryLock(10000, TimeUnit.SECONDS);
+            lockedSecond = second.tryLock(10000, TimeUnit.SECONDS);
             if (lockedFirst && lockedSecond) {
                 if (ACCOUNT_SERVICE.withdraw(from, money.negate())) {
                     if (ACCOUNT_SERVICE.withdraw(to, money)) {
@@ -43,6 +43,8 @@ public class SimpleTransactionService implements TransactionService {
                     } else {
                         ACCOUNT_SERVICE.withdraw(from, money);
                     }
+                } else {
+                    logger.info("Account {} is busy!", from);
                 }
             }
             return false;
