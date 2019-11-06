@@ -9,7 +9,7 @@ public class Account {
 
     private final String id;
     private final BigDecimal money;
-    private final Lock lock =  new ReentrantLock();
+    private transient final Lock lock =  new ReentrantLock();
 
     public Account(String id, BigDecimal money) {
         this.id = id;

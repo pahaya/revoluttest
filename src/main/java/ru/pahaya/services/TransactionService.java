@@ -1,6 +1,7 @@
 package ru.pahaya.services;
 
 import ru.pahaya.entity.Account;
+import ru.pahaya.entity.Transaction;
 
 import java.math.BigDecimal;
 
@@ -8,6 +9,7 @@ public interface TransactionService {
 
     boolean process(Account from, Account to, BigDecimal money);
 
-    void refund(String transactionId);
+    boolean refund(String transactionId);
 
+    Transaction get(String id);
 }
