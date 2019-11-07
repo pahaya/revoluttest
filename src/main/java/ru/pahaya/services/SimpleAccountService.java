@@ -28,12 +28,13 @@ public class SimpleAccountService implements AccountService {
     }
 
     @Override
-    public boolean delete(Account account) {
-        return ACCOUNT_DAO.remove(account);
+    public boolean delete(String accountId) {
+        return ACCOUNT_DAO.remove(accountId);
     }
 
     @Override
     public boolean withdraw(Account account, BigDecimal money) {
-        return ACCOUNT_DAO.replace(account.getId(), account, account.add(money));
+        account.add(money);
+        return true;
     }
 }

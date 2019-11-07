@@ -3,20 +3,22 @@ package ru.pahaya.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Account {
 
     private final String id;
-    private final BigDecimal money;
-    private transient final Lock lock =  new ReentrantLock();
+    private volatile BigDecimal money;
+    private transient final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public Account(String id, BigDecimal money) {
         this.id = id;
         this.money = money;
     }
 
-    public Lock getLock() {
+    public ReadWriteLock getLock() {
         return lock;
     }
 
@@ -25,11 +27,23 @@ public class Account {
     }
 
     public BigDecimal getMoney() {
-        return money;
+        //Locked mutation of the money in case somebody will use it without Transaction Service.
+        lock.readLock().lock();
+        try {
+            return money;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
-    public Account add(BigDecimal someMoney) {
-        return new Account(id, money.add(someMoney));
+    public void add(BigDecimal someMoney) {
+        //Locked mutation of the money in case somebody will use it without Transaction Service.
+        lock.writeLock().lock();
+        try {
+            money = money.add(someMoney);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override

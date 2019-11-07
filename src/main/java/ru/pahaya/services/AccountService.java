@@ -13,7 +13,7 @@ public interface AccountService {
 
     Optional<Account> get(String id);
 
-   boolean delete(Account account);
+   boolean delete(String id);
 
    boolean withdraw(Account account, BigDecimal money);
 }

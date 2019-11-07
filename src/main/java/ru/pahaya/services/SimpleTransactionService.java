@@ -2,6 +2,7 @@ package ru.pahaya.services;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.pahaya.Application;
 import ru.pahaya.ServiceHolder;
 import ru.pahaya.dao.TransactionDao;
 import ru.pahaya.entity.Account;
@@ -17,25 +18,29 @@ public class SimpleTransactionService implements TransactionService {
 
     private static final TransactionDao TRANSACTION_DAO = new TransactionDao();
     private static final AccountService ACCOUNT_SERVICE = ServiceHolder.getAccountService();
-    private static final Logger logger = LogManager.getLogger(SimpleTransactionService.class);
+    private static final Logger logger = LogManager.getLogger(Application.class);
+    public static final int TIME_TO_WAIT = 1000;
 
     @Override
     public boolean process(Account from, Account to, BigDecimal money) {
         Lock first;
         Lock second;
         if (from.getId().hashCode() > to.getId().hashCode()) {
-            first = from.getLock();
-            second = to.getLock();
+            first = from.getLock().writeLock();
+            second = to.getLock().writeLock();
         } else {
-            second = from.getLock();
-            first = to.getLock();
+            second = from.getLock().writeLock();
+            first = to.getLock().writeLock();
         }
         boolean lockedFirst = false;
         boolean lockedSecond = false;
         try {
-            lockedFirst = first.tryLock(10000, TimeUnit.SECONDS);
-            lockedSecond = second.tryLock(10000, TimeUnit.SECONDS);
+            lockedFirst = first.tryLock(TIME_TO_WAIT, TimeUnit.MILLISECONDS);
+            lockedSecond = second.tryLock(TIME_TO_WAIT, TimeUnit.MILLISECONDS);
             if (lockedFirst && lockedSecond) {
+                if (from.getMoney().compareTo(money) < 0) {
+                    throw new BadRequestException("Account id =" + from.getId() + " does not have enough money.");
+                }
                 if (ACCOUNT_SERVICE.withdraw(from, money.negate())) {
                     if (ACCOUNT_SERVICE.withdraw(to, money)) {
                         TRANSACTION_DAO.create(from, to, money);

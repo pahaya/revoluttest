@@ -18,8 +18,8 @@ public class AccountDao {
         return Optional.ofNullable(DB.get(id));
     }
 
-    public boolean remove(Account account) {
-        return DB.remove(account.getId() , account);
+    public boolean remove(String id) {
+        return DB.remove(id) != null;
     }
 
     public boolean replace(String id, Account account, Account add) {

@@ -3,6 +3,7 @@ package ru.pahaya.entrypoints;
 import com.google.gson.Gson;
 import ru.pahaya.ServiceHolder;
 import ru.pahaya.entity.Account;
+import ru.pahaya.entity.AccountVO;
 import ru.pahaya.services.AccountService;
 import ru.pahaya.services.SimpleAccountService;
 
@@ -34,9 +35,9 @@ public class AccountEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public String create(String accountJson) {
         AccountValidator.validateAccountJson(accountJson);
-        Account account = gson.fromJson(accountJson, Account.class);
-        Account accountFromSystem = account.getId() != null ?
-                ACCOUNT_SERVICE.create(account.getId(), account.getMoney()) : ACCOUNT_SERVICE.create(account.getMoney());
+        AccountVO accountFromJson = gson.fromJson(accountJson, AccountVO.class);
+        Account accountFromSystem = accountFromJson.getId() != null ?
+                ACCOUNT_SERVICE.create(accountFromJson.getId(), accountFromJson.getMoney()) : ACCOUNT_SERVICE.create(accountFromJson.getMoney());
         return gson.toJson(accountFromSystem);
     }
 
@@ -45,8 +46,8 @@ public class AccountEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public String delete(String accountJson) {
         AccountValidator.validateAccountDeleteJson(accountJson);
-        Account account = gson.fromJson(accountJson, Account.class);
-        boolean result = ACCOUNT_SERVICE.delete(account);
+        AccountVO account = gson.fromJson(accountJson, AccountVO.class);
+        boolean result = ACCOUNT_SERVICE.delete(account.getId());
         return "{ \"result\" : " + result + "}";
     }
 }
