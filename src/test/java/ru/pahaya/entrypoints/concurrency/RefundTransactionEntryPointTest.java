@@ -14,16 +14,14 @@ import ru.pahaya.entity.Account;
 import ru.pahaya.entity.AccountVO;
 import ru.pahaya.entity.Transaction;
 import ru.pahaya.entrypoints.AccountEntryPoint;
-import ru.pahaya.entrypoints.AccountEntryPointTest;
 import ru.pahaya.entrypoints.TransactionEntryPoint;
 
 import javax.ws.rs.BadRequestException;
 import java.math.BigDecimal;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(ConcurrentTestRunner.class)
-public class OutOfMoneyTransactionEntryPointTest {
+public class RefundTransactionEntryPointTest {
 
     private final static TransactionEntryPoint TRANSACTION_ENTRY_POINT = new TransactionEntryPoint();
     private final static AccountEntryPoint ACCOUNT_ENTRY_POINT = new AccountEntryPoint();
@@ -32,7 +30,7 @@ public class OutOfMoneyTransactionEntryPointTest {
     private static final String MAIN = "MAIN";
     private final static int COUNT = 500;
     private static final String SECOND = "SECOND";
-    private static final Logger logger = LogManager.getLogger(OutOfMoneyTransactionEntryPointTest.class);
+    private static final Logger logger = LogManager.getLogger(RefundTransactionEntryPointTest.class);
 
     @Before
     public void setUp() {

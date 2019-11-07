@@ -8,6 +8,10 @@ public class Result {
         this.result = result;
     }
 
+    public boolean isResult() {
+        return result;
+    }
+
     public static Result of(boolean result) {
         return new Result(result);
     }

@@ -11,6 +11,7 @@ import ru.pahaya.services.TransactionService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Path("/transaction")
@@ -24,7 +25,8 @@ public class TransactionEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("id") String id) {
-        return "";
+        Transaction transaction = TRANSACTION_SERVICE.get(id);
+        return gson.toJson(transaction);
     }
 
     @POST
@@ -47,6 +49,15 @@ public class TransactionEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public String refund(String transaction) {
         Transaction tr = gson.fromJson(transaction, Transaction.class);
-        return gson.toJson(Result.of(TRANSACTION_SERVICE.refund(tr.getId())));
+        boolean refundTransaction = TRANSACTION_SERVICE.refund(tr.getId());
+        return gson.toJson(Result.of(refundTransaction));
+    }
+
+    @GET
+    @Path("client/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getTransactions(@PathParam("id") String id) {
+        List<Transaction> transaction = TRANSACTION_SERVICE.getByClientId(id);
+        return gson.toJson(transaction);
     }
 }

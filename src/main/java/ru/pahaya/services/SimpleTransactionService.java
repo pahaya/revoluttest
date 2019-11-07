@@ -10,6 +10,7 @@ import ru.pahaya.entity.Transaction;
 
 import javax.ws.rs.BadRequestException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -87,5 +88,10 @@ public class SimpleTransactionService implements TransactionService {
             throw new BadRequestException("Wrong transaction id !");
         }
         return transaction.get();
+    }
+
+    @Override
+    public List<Transaction> getByClientId(String clientId) {
+        return TRANSACTION_DAO.getByClientId(clientId);
     }
 }
