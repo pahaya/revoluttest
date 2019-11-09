@@ -71,14 +71,20 @@ public class SimpleTransactionService implements TransactionService {
     public boolean refund(String transactionId) {
         Optional<Transaction> tr = TRANSACTION_DAO.get(transactionId);
         if (tr.isEmpty()) {
-            throw new BadRequestException("Wrong transaction id !");
+            throw new BadRequestException("Wrong transaction id =" + transactionId);
         }
-        Optional<Account> from = ACCOUNT_SERVICE.get(tr.get().getFromAccount());
-        Optional<Account> to = ACCOUNT_SERVICE.get(tr.get().getToAccount());
-        if (to.isEmpty() || from.isEmpty()) {
-            throw new BadRequestException("Wrong transaction id !");
+        boolean result = false;
+        if (tr.get().getRefunded().compareAndSet(false, true)) {
+            Optional<Account> from = ACCOUNT_SERVICE.get(tr.get().getFromAccount());
+            Optional<Account> to = ACCOUNT_SERVICE.get(tr.get().getToAccount());
+            if (to.isEmpty() || from.isEmpty()) {
+                tr.get().getRefunded().set(false);
+                throw new BadRequestException("Wrong transaction id " + transactionId);
+            }
+            result = process(to.get(), from.get(), tr.get().getMoney());
+            tr.get().getRefunded().set(result);
         }
-        return process(to.get(), from.get(), tr.get().getMoney());
+        return result;
     }
 
     @Override

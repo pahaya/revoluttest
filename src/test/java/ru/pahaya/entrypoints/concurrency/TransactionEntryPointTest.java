@@ -1,4 +1,4 @@
-package ru.pahaya.entrypoints;
+package ru.pahaya.entrypoints.concurrency;
 
 import com.anarsoft.vmlens.concurrent.junit.ConcurrentTestRunner;
 import com.anarsoft.vmlens.concurrent.junit.ThreadCount;
@@ -13,6 +13,7 @@ import ru.pahaya.Application;
 import ru.pahaya.entity.AccountVO;
 import ru.pahaya.entity.Result;
 import ru.pahaya.entity.Transaction;
+import ru.pahaya.entrypoints.EntryPointTest;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,8 +38,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TransactionEntryPointTest extends EntryPointTest {
 
     private static final Logger logger = LogManager.getLogger(TransactionEntryPointTest.class);
-    private final static String MAIN = "MAIN";
-    private final static String SECOND = "SECOND";
+    private final static String MAIN = UUID.randomUUID().toString();
+    private final static String SECOND = UUID.randomUUID().toString();
     private final static String account = "{\"id\":\"" + MAIN + "\",\"money\":1000}";
     private final static String account2 = "{\"id\":\"" + SECOND + "\",\"money\":0}";
     private static final Gson gson = new Gson();

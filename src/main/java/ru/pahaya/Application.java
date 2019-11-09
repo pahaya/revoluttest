@@ -16,6 +16,7 @@ import ru.pahaya.entrypoints.TransactionEntryPoint;
  * This is main entry point of the program
  */
 public class Application {
+
     private static final Logger logger = LogManager.getLogger(Application.class);
     private volatile static Server server;
 

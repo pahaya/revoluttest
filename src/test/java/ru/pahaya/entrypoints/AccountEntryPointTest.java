@@ -25,6 +25,7 @@ public class AccountEntryPointTest extends EntryPointTest {
     private final static String account = "{\"id\":\"2\",\"money\":1000.35}";
     private final static String account2 = "{\"money\":1000.35}";
     private final static String account3 = "{\"id\":\"3\",\"money\":1000.35}";
+    private static final String HTTP_LOCALHOST_8080_ACCOUNT = "http://localhost:8080/account/";
 
     @Before
     public void startApp() {
@@ -46,14 +47,14 @@ public class AccountEntryPointTest extends EntryPointTest {
     public void createAccount2() {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT))
                 .POST(HttpRequest.BodyPublishers.ofString(account2))
                 .build();
 
         HttpResponse<String> response = getStringHttpResponse(client, request);
         AccountVO accountFromResponse = gson.fromJson(response.body(), AccountVO.class);
         request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/" + accountFromResponse.getId()))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT + accountFromResponse.getId()))
                 .GET()
                 .build();
         response = getStringHttpResponse(client, request);
@@ -62,7 +63,7 @@ public class AccountEntryPointTest extends EntryPointTest {
         Assert.assertEquals(accountFromResponse, accountFromResponse2);
 
         request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT))
                 .method("DELETE", HttpRequest.BodyPublishers.ofString(gson.toJson(accountFromResponse, AccountVO.class)))
                 .build();
 
@@ -91,7 +92,7 @@ public class AccountEntryPointTest extends EntryPointTest {
     private HttpResponse<String> createAccount3() {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT))
                 .POST(HttpRequest.BodyPublishers.ofString(account3))
                 .build();
 

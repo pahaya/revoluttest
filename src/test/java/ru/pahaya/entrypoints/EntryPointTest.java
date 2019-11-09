@@ -13,18 +13,19 @@ import java.net.http.HttpResponse;
 public class EntryPointTest {
 
     private static final Logger logger = LogManager.getLogger(EntryPointTest.class);
+    private static final String HTTP_LOCALHOST_8080_ACCOUNT = "http://localhost:8080/account/";
 
-    void createAccount(String account) {
+    protected void createAccount(String account) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT))
                 .POST(HttpRequest.BodyPublishers.ofString(account))
                 .build();
         HttpResponse<String> response = getStringHttpResponse(client, request);
         Assert.assertEquals(response.body(), account);
     }
 
-    HttpResponse<String> getStringHttpResponse(HttpClient client, HttpRequest request) {
+    protected HttpResponse<String> getStringHttpResponse(HttpClient client, HttpRequest request) {
         HttpResponse<String> response = null;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

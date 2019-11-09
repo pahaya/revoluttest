@@ -3,6 +3,7 @@ package ru.pahaya.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Transaction {
 
@@ -10,6 +11,7 @@ public class Transaction {
     private final String fromAccount;
     private final String toAccount;
     private final BigDecimal money;
+    private transient final AtomicBoolean refunded = new AtomicBoolean(false);
 
     public Transaction(String fromAccount, String toAccount, BigDecimal money) {
         this.fromAccount = fromAccount;
@@ -23,6 +25,10 @@ public class Transaction {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.money = money;
+    }
+
+    public AtomicBoolean getRefunded() {
+        return refunded;
     }
 
     public String getId() {
@@ -49,12 +55,12 @@ public class Transaction {
         return Objects.equals(id, that.id) &&
                 Objects.equals(fromAccount, that.fromAccount) &&
                 Objects.equals(toAccount, that.toAccount) &&
-                Objects.equals(money, that.money);
+                Objects.equals(money, that.money) &&
+                Objects.equals(refunded, that.refunded);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, fromAccount, toAccount, money);
+        return Objects.hash(id, fromAccount, toAccount, money, refunded);
     }
 }

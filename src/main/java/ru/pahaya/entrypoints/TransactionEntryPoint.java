@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This is transaction entry point
+ */
 @Path("/transaction")
 public class TransactionEntryPoint {
 
@@ -21,6 +24,12 @@ public class TransactionEntryPoint {
     private static final AccountService ACCOUNT_SERVICE = ServiceHolder.getAccountService();
     private static final Gson gson = new Gson();
 
+    /**
+     * Return Transaction
+     * @throws BadRequestException if transaction does not exist
+     * @param id of transaction
+     * @return Transaction from the storage
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -29,6 +38,11 @@ public class TransactionEntryPoint {
         return gson.toJson(transaction);
     }
 
+    /**
+     * Execute money transferring from one account to enother
+     * @param transaction transaction object
+     * @return JSON representation of Result object
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -44,6 +58,11 @@ public class TransactionEntryPoint {
         return gson.toJson(Result.of(result));
     }
 
+    /**
+     * Executes refund of transaction
+     * @param transaction JSON representation of Transaction object
+     * @return JSON representation of Result object
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -53,6 +72,12 @@ public class TransactionEntryPoint {
         return gson.toJson(Result.of(refundTransaction));
     }
 
+    /**
+     * Return Transactions related to this id of the client
+     * @throws BadRequestException if transaction does not exist
+     * @param id of Client
+     * @return JSON representation of Transactions
+     */
     @GET
     @Path("client/{id}")
     @Produces(MediaType.APPLICATION_JSON)
