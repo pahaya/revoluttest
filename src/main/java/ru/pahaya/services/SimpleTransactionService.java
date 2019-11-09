@@ -22,6 +22,9 @@ public class SimpleTransactionService implements TransactionService {
     private static final Logger logger = LogManager.getLogger(Application.class);
     public static final int TIME_TO_WAIT = 1000;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean process(Account from, Account to, BigDecimal money) {
         Lock first;
@@ -67,6 +70,9 @@ public class SimpleTransactionService implements TransactionService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean refund(String transactionId) {
         Optional<Transaction> tr = TRANSACTION_DAO.get(transactionId);
@@ -87,6 +93,9 @@ public class SimpleTransactionService implements TransactionService {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Transaction get(String id) {
         Optional<Transaction> transaction = TRANSACTION_DAO.get(id);
@@ -96,6 +105,9 @@ public class SimpleTransactionService implements TransactionService {
         return transaction.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Transaction> getByClientId(String clientId) {
         return TRANSACTION_DAO.getByClientId(clientId);

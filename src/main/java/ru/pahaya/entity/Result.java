@@ -1,10 +1,13 @@
 package ru.pahaya.entity;
 
+/**
+ * Result of operations
+ */
 public class Result {
 
     private final boolean result;
 
-    public Result(boolean result) {
+    private Result(boolean result) {
         this.result = result;
     }
 

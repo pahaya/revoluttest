@@ -7,12 +7,20 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Account Entity for internal usage
+ */
 public class Account {
 
     private final String id;
     private volatile BigDecimal money;
     private transient final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /**
+     *
+     * @param id id of the client
+     * @param money initial amount of money
+     */
     public Account(String id, BigDecimal money) {
         this.id = id;
         this.money = money;

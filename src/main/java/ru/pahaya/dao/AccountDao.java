@@ -33,15 +33,22 @@ public class AccountDao {
         );
     }
 
+    /**
+     * Get Account from DB
+     * @param id id of Account
+     * @return Account from DB
+     */
     public Optional<Account> get(String id) {
         return Optional.ofNullable(DB.get(id));
     }
 
+    /**
+     * Remove account from the DB
+     * @param id id of account
+     * @return result of operation
+     */
     public boolean remove(String id) {
         return DB.remove(id) != null;
     }
 
-    public boolean replace(String id, Account account, Account add) {
-        return DB.replace(id, account, add);
-    }
 }

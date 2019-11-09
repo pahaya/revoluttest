@@ -34,6 +34,7 @@ public class TransactionEntryPoint {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String get(@PathParam("id") String id) {
+        TransactionValidator.validateIsBlank(id);
         Transaction transaction = TRANSACTION_SERVICE.get(id);
         return gson.toJson(transaction);
     }

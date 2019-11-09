@@ -3,11 +3,19 @@ package ru.pahaya.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * Account entity for deserialization
+ */
 public class AccountVO {
 
     private final String id;
     private final BigDecimal money;
 
+    /**
+     *
+     * @param id id of the client
+     * @param money initial amount of money
+     */
     public AccountVO(String id, BigDecimal money) {
         this.id = id;
         this.money = money;

@@ -11,12 +11,20 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Optional;
 
+/**
+ * Entry point for the Account rest service
+ */
 @Path("/account")
 public class AccountEntryPoint {
 
     private static final AccountService ACCOUNT_SERVICE = ServiceHolder.getAccountService();
     private static final Gson gson = new Gson();
 
+    /**
+     * Get information about client with specific id
+     * @param id id of the client
+     * @return Client in JSON representation
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,17 +38,29 @@ public class AccountEntryPoint {
         }
     }
 
+    /**
+     * Creating account
+     * @param accountJson AccountVO object in JSON representation
+     * @return created account
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String create(String accountJson) {
-        AccountValidator.validateAccountJson(accountJson);
+        AccountValidator.validate(accountJson);
+        AccountValidator.validateMoney(accountJson);
         AccountVO accountFromJson = gson.fromJson(accountJson, AccountVO.class);
         Account accountFromSystem = accountFromJson.getId() != null ?
-                ACCOUNT_SERVICE.create(accountFromJson.getId(), accountFromJson.getMoney()) : ACCOUNT_SERVICE.create(accountFromJson.getMoney());
+                ACCOUNT_SERVICE.create(accountFromJson.getId(), accountFromJson.getMoney()) :
+                ACCOUNT_SERVICE.create(accountFromJson.getMoney());
         return gson.toJson(accountFromSystem);
     }
 
+    /**
+     * Removing account from the system
+     * @param accountJson account for deletion
+     * @return result of operation
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

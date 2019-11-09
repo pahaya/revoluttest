@@ -5,14 +5,26 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Transaction Entity
+ */
 public class Transaction {
 
     private final String id;
     private final String fromAccount;
     private final String toAccount;
     private final BigDecimal money;
+    /**
+         * If transaction invalidated this flag must be true
+     */
     private transient final AtomicBoolean refunded = new AtomicBoolean(false);
 
+    /**
+     *
+     * @param fromAccount source account
+     * @param toAccount destination account
+     * @param money initial amount of money
+     */
     public Transaction(String fromAccount, String toAccount, BigDecimal money) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
@@ -20,6 +32,12 @@ public class Transaction {
         this.id = UUID.randomUUID().toString();
     }
 
+    /**
+     * @param id id of the transaction
+     * @param fromAccount source account
+     * @param toAccount destination account
+     * @param money initial amount of money
+     */
     public Transaction(String id, String fromAccount, String toAccount, BigDecimal money) {
         this.id = id;
         this.fromAccount = fromAccount;
