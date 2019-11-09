@@ -44,7 +44,7 @@ public class TransactionEntryPoint {
         return gson.toJson(Result.of(result));
     }
 
-    @DELETE
+    @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String refund(String transaction) {
