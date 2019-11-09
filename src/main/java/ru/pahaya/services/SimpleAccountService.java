@@ -3,6 +3,7 @@ package ru.pahaya.services;
 import ru.pahaya.entity.Account;
 import ru.pahaya.dao.AccountDao;
 
+import javax.ws.rs.BadRequestException;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,7 +30,16 @@ public class SimpleAccountService implements AccountService {
 
     @Override
     public boolean delete(String accountId) {
-        return ACCOUNT_DAO.remove(accountId);
+        Optional<Account> account = get(accountId);
+        if (account.isEmpty()) {
+            throw new BadRequestException(String.format("We do not have such account %s !", accountId));
+        }
+        account.get().getLock().writeLock().lock();
+        try {
+            return ACCOUNT_DAO.remove(accountId);
+        } finally {
+            account.get().getLock().writeLock().unlock();
+        }
     }
 
     @Override

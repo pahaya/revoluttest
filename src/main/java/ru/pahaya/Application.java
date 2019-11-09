@@ -12,7 +12,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import ru.pahaya.entrypoints.TransactionEntryPoint;
 
-
+/**
+ * This is main entry point of the program
+ */
 public class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
     private volatile static Server server;
@@ -26,7 +28,10 @@ public class Application {
         }
     }
 
-    public static Server startServer() {
+    /**
+     * Start jetty server with jersey
+     */
+    public static void startServer() {
         //Create the server
         int maxThreads = 100;
         int minThreads = 10;
@@ -57,9 +62,11 @@ public class Application {
         } catch (Exception e) {
             logger.error("Error during start of the server.", e);
         }
-        return server;
     }
 
+    /**
+     * Stop Jetty
+     */
     public static void stop() {
         try {
             server.stop();

@@ -17,8 +17,12 @@ import ru.pahaya.entrypoints.TransactionEntryPoint;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is concurrent test
+ * This test moves money from one account into 500 different accounts
+ */
 @RunWith(ConcurrentTestRunner.class)
-public class TransactionEntryPointTest {
+public class MultipleAccountWithdraw {
 
     private final static TransactionEntryPoint TRANSACTION_ENTRY_POINT = new TransactionEntryPoint();
     private final static AccountEntryPoint ACCOUNT_ENTRY_POINT = new AccountEntryPoint();
@@ -39,11 +43,10 @@ public class TransactionEntryPointTest {
     public void tearDown() {
         AccountVO accountVO = gson.fromJson(ACCOUNT_ENTRY_POINT.get(MAIN), AccountVO.class);
         Assert.assertEquals(accountVO.getMoney(), new BigDecimal("0"));
-    }
-
-    @Test
-    public void get() {
-
+        for (int i = 0; i < COUNT; i++) {
+            accountVO = gson.fromJson(ACCOUNT_ENTRY_POINT.get(String.valueOf(i)), AccountVO.class);
+            Assert.assertEquals(accountVO.getMoney(), new BigDecimal("1"));
+        }
     }
 
     @Test
@@ -51,9 +54,5 @@ public class TransactionEntryPointTest {
     public void process() {
         TRANSACTION_ENTRY_POINT.process(gson.toJson(new Transaction(MAIN, String.valueOf(ATOMIC_INTEGER.getAndIncrement()),
                 new BigDecimal("1"))));
-    }
-
-    @Test
-    public void delete() {
     }
 }

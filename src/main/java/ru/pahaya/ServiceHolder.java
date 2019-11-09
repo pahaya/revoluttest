@@ -5,6 +5,9 @@ import ru.pahaya.services.SimpleAccountService;
 import ru.pahaya.services.SimpleTransactionService;
 import ru.pahaya.services.TransactionService;
 
+/**
+ * Holder for the services.
+ */
 public class ServiceHolder {
 
     private static final AccountService ACCOUNT_SERVICE = new SimpleAccountService();

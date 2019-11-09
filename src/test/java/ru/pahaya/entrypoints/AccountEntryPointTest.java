@@ -6,16 +6,17 @@ import org.apache.logging.log4j.Logger;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 import ru.pahaya.Application;
-import ru.pahaya.entity.Account;
 import ru.pahaya.entity.AccountVO;
 import ru.pahaya.entity.Result;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/***
+ * This test starts http server, creates several accounts, and removes them.
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountEntryPointTest extends EntryPointTest {
 
@@ -23,6 +24,7 @@ public class AccountEntryPointTest extends EntryPointTest {
     private static final Gson gson = new Gson();
     private final static String account = "{\"id\":\"2\",\"money\":1000.35}";
     private final static String account2 = "{\"money\":1000.35}";
+    private final static String account3 = "{\"id\":\"3\",\"money\":1000.35}";
 
     @Before
     public void startApp() {
@@ -79,4 +81,21 @@ public class AccountEntryPointTest extends EntryPointTest {
         HttpResponse<String> response = getStringHttpResponse(client, request);
         Assert.assertEquals(response.body(), account);
     }
+
+    @Test
+    public void createAccountSeveralTimes() {
+        Assert.assertEquals(createAccount3().statusCode(), 200);
+        Assert.assertEquals(createAccount3().statusCode(), 400);
+    }
+
+    private HttpResponse<String> createAccount3() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/account/"))
+                .POST(HttpRequest.BodyPublishers.ofString(account3))
+                .build();
+
+        return getStringHttpResponse(client, request);
+    }
+
 }

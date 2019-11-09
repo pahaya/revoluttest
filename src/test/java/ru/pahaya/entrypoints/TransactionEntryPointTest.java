@@ -10,7 +10,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import ru.pahaya.Application;
-import ru.pahaya.entity.Account;
 import ru.pahaya.entity.AccountVO;
 import ru.pahaya.entity.Result;
 import ru.pahaya.entity.Transaction;
@@ -27,6 +26,11 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is concurrent test
+ * This test starts Jetty, and use http communication.
+ * It moves money into SECOND account, gets all transactions and do refund for all transactions
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(ConcurrentTestRunner.class)
 public class TransactionEntryPointTest extends EntryPointTest {
@@ -40,6 +44,8 @@ public class TransactionEntryPointTest extends EntryPointTest {
     private static final int COUNT_THREADS = 100;
     private static final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(COUNT_THREADS);
     private static final CountDownLatch COUNT_DOWN_LATCH_GET_TRANSACTIONS = new CountDownLatch(1);
+    private static final String HTTP_LOCALHOST_8080_TRANSACTION = "http://localhost:8080/transaction/";
+    private static final String HTTP_LOCALHOST_8080_ACCOUNT = "http://localhost:8080/account/";
     private static volatile List transactions;
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
@@ -70,11 +76,12 @@ public class TransactionEntryPointTest extends EntryPointTest {
         waitForMoneyTransfer();
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/transaction/client/" + MAIN))
+                .uri(URI.create(HTTP_LOCALHOST_8080_TRANSACTION + "/client/" + MAIN))
                 .GET()
                 .build();
         HttpResponse<String> response = getStringHttpResponse(client, request);
-        Type listType = new TypeToken<ArrayList<Transaction>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<Transaction>>() {
+        }.getType();
         transactions = Collections.unmodifiableList(gson.fromJson(response.body(), listType));
         COUNT_DOWN_LATCH_GET_TRANSACTIONS.countDown();
     }
@@ -91,7 +98,7 @@ public class TransactionEntryPointTest extends EntryPointTest {
         Transaction transaction = (Transaction) transactions.get(id);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/transaction/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_TRANSACTION))
                 .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(transaction)))
                 .build();
         HttpResponse<String> response = getStringHttpResponse(client, request);
@@ -110,7 +117,7 @@ public class TransactionEntryPointTest extends EntryPointTest {
     private void checkAccount(String account, int money) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/account/" + account))
+                .uri(URI.create(HTTP_LOCALHOST_8080_ACCOUNT + account))
                 .GET()
                 .build();
         HttpResponse<String> response = getStringHttpResponse(client, request);
@@ -122,7 +129,7 @@ public class TransactionEntryPointTest extends EntryPointTest {
         String transaction = gson.toJson(new Transaction(from, to, new BigDecimal("10")));
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/transaction/"))
+                .uri(URI.create(HTTP_LOCALHOST_8080_TRANSACTION))
                 .POST(HttpRequest.BodyPublishers.ofString(transaction))
                 .build();
 

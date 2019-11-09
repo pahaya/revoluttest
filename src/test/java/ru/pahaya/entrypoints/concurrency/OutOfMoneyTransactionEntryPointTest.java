@@ -22,6 +22,10 @@ import java.math.BigDecimal;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * This is concurrent test
+ * This class tests the situation, when multiple threads trying to withdraw money and money is not enough .
+ */
 @RunWith(ConcurrentTestRunner.class)
 public class OutOfMoneyTransactionEntryPointTest {
 
@@ -34,12 +38,18 @@ public class OutOfMoneyTransactionEntryPointTest {
     private static final String SECOND = "SECOND";
     private static final Logger logger = LogManager.getLogger(OutOfMoneyTransactionEntryPointTest.class);
 
+    /**
+     * Create 2 accounts with balance = 250
+     */
     @Before
     public void setUp() {
         ACCOUNT_ENTRY_POINT.create(gson.toJson(new Account(MAIN, new BigDecimal(String.valueOf(COUNT / 2)))));
         ACCOUNT_ENTRY_POINT.create(gson.toJson(new Account(SECOND, new BigDecimal(String.valueOf(COUNT / 2)))));
     }
 
+    /**
+     * Check the results
+     */
     @After
     public void check() {
         AccountVO accountMain = gson.fromJson(ACCOUNT_ENTRY_POINT.get(MAIN), AccountVO.class);
@@ -49,6 +59,10 @@ public class OutOfMoneyTransactionEntryPointTest {
         Assert.assertEquals(new BigDecimal(ATOMIC_INTEGER.get()), new BigDecimal(COUNT / 2));
     }
 
+    /**
+     * Withdraw money with 500 threads. Each thread should withdraw 1 point.
+     * We must catch 250 exceptions - not enough money.
+     */
     @Test
     @ThreadCount(COUNT)
     public void notEnoughMoneyTest() {
