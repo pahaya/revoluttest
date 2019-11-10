@@ -48,7 +48,9 @@ public class TransactionEntryPoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String process(String transaction) {
+        TransactionValidator.validateIsBlank(transaction);
         Transaction tr = gson.fromJson(transaction, Transaction.class);
+        TransactionValidator.validateTransaction(tr);
         Optional<Account> from = ACCOUNT_SERVICE.get(tr.getFromAccount());
         Optional<Account> to = ACCOUNT_SERVICE.get(tr.getToAccount());
         if (from.isEmpty() || to.isEmpty()) {
@@ -68,7 +70,9 @@ public class TransactionEntryPoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String refund(String transaction) {
+        TransactionValidator.validateIsBlank(transaction);
         Transaction tr = gson.fromJson(transaction, Transaction.class);
+        TransactionValidator.validateTransaction(tr);
         boolean refundTransaction = TRANSACTION_SERVICE.refund(tr.getId());
         return gson.toJson(Result.of(refundTransaction));
     }
@@ -83,6 +87,7 @@ public class TransactionEntryPoint {
     @Path("client/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getTransactions(@PathParam("id") String id) {
+        TransactionValidator.validateIsBlank(id);
         List<Transaction> transaction = TRANSACTION_SERVICE.getByClientId(id);
         return gson.toJson(transaction);
     }
